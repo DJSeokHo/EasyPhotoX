@@ -1,0 +1,12 @@
+<resources>
+    <string name="app_name">EasyPhotoX</string>
+
+    <string name="camera_confirm">Confirm</string>
+    <string name="camera_cancel">Cancel</string>
+    <string name="camera_normal">normal</string>
+    <string name="camera_high">high</string>
+    <string name="camera_delete">Delete</string>
+    <string name="camera_gallery">Gallery</string>
+    <string name="selected_image_count">%s / %s</string>
+
+</resources>

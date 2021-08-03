@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="DesignSurface">
+    <option name="filePathToZoomLevelMap">
+      <map>
+        <entry key="app/src/main/res/drawable/album_selector_item_check_bg.xml" value="0.146875" />
+        <entry key="app/src/main/res/layout/activity_easy_photo_x.xml" value="0.2677083333333333" />
+        <entry key="app/src/main/res/layout/fragment_easy_photo_x.xml" value="0.28177083333333336" />
+        <entry key="app/src/main/res/layout/view_holder_album_selector.xml" value="0.14479166666666668" />
+        <entry key="app/src/main/res/layout/view_holder_album_selector_item.xml" value="0.13072916666666667" />
+        <entry key="app/src/main/res/layout/view_holder_sh_selected_image.xml" value="0.14479166666666668" />
+        <entry key="app/src/main/res/layout/view_holder_sh_selected_image_item.xml" value="0.14479166666666668" />
+      </map>
+    </option>
+  </component>
+  <component name="ProjectRootManager" version="2" languageLevel="JDK_11" project-jdk-name="1.8" project-jdk-type="JavaSDK">
+    <output url="file://$PROJECT_DIR$/build/classes" />
+  </component>
+  <component name="ProjectType">
+    <option name="id" value="Android" />
+  </component>
+</project>

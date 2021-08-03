@@ -1,0 +1,158 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:context="com.swein.easyphotox.camera.EasyPhotoXFragment"
+        android:id="@+id/frameLayoutRoot">
+    
+    <androidx.camera.view.PreviewView
+            android:id="@+id/previewView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+
+    <LinearLayout
+            android:gravity="center_vertical"
+            android:layout_gravity="end"
+            android:padding="10dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+    
+        <ImageButton
+                android:id="@+id/imageButtonFlash"
+                android:translationZ="5dp"
+                android:padding="6dp"
+                android:background="@drawable/round_corner_bg_gradient_stroke"
+                android:scaleType="fitCenter"
+                android:layout_width="30dp"
+                android:layout_height="30dp"/>
+        
+        <ImageButton
+                android:layout_marginStart="16dp"
+                android:translationZ="5dp"
+                android:id="@+id/imageButtonSwitchCamera"
+                android:padding="6dp"
+                android:background="@drawable/round_corner_bg_gradient_stroke"
+                android:scaleType="fitCenter"
+                android:src="@mipmap/rotate_camera"
+                android:layout_width="30dp"
+                android:layout_height="30dp"/>
+    </LinearLayout>
+    
+    <LinearLayout
+            android:layout_gravity="bottom"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+    
+        <FrameLayout
+                android:visibility="gone"
+                android:id="@+id/frameLayoutSelectedImageArea"
+                android:layout_width="match_parent"
+                android:layout_height="200dp"/>
+        
+        <FrameLayout
+                android:background="#0000"
+                android:padding="10dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                >
+        
+            <FrameLayout
+                    android:layout_gravity="center_vertical"
+                    android:layout_width="80dp"
+                    android:layout_height="80dp">
+            
+                <ImageView
+                        android:translationZ="5dp"
+                        android:id="@+id/imageView"
+                        android:scaleType="fitCenter"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"/>
+            
+                <TextView
+                        android:translationZ="6dp"
+                        android:padding="4dp"
+                        android:background="#33000000"
+                        android:layout_gravity="center"
+                        android:textStyle="bold"
+                        android:textSize="8pt"
+                        android:textColor="@color/white"
+                        android:id="@+id/textViewImageCount"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"/>
+        
+            </FrameLayout>
+        
+        
+            <ImageButton
+                    android:translationZ="5dp"
+                    android:id="@+id/imageButtonTake"
+                    android:layout_gravity="center"
+                    android:background="@drawable/circle_bg_gradient"
+                    android:scaleType="fitCenter"
+                    android:layout_width="60dp"
+                    android:layout_height="60dp"/>
+    
+            <LinearLayout
+                    android:gravity="center_horizontal"
+                    android:layout_marginStart="74dp"
+                    android:layout_gravity="center"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+        
+                <ImageButton
+                        android:layout_gravity="center"
+                        android:background="#0000"
+                        android:src="@mipmap/camera_album"
+                        android:translationZ="5dp"
+                        android:id="@+id/imageButtonAlbum"
+                        android:scaleType="fitCenter"
+                        android:layout_width="46dp"
+                        android:layout_height="46dp"/>
+        
+                <TextView
+                        android:layout_gravity="center"
+                        android:text="@string/camera_gallery"
+                        android:textSize="4.5pt"
+                        android:textColor="@color/white"
+                        android:background="#0000"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"/>
+    
+            </LinearLayout>
+        
+            <TextView
+                    android:text="@string/camera_cancel"
+                    android:paddingVertical="3dp"
+                    android:paddingHorizontal="10dp"
+                    android:textSize="7pt"
+                    android:id="@+id/textViewAction"
+                    android:textColor="@color/white"
+                    android:layout_gravity="center_vertical|end"
+                    android:background="@drawable/round_corner_bg_gradient_stroke"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"/>
+    
+        </FrameLayout>
+        
+    </LinearLayout>
+    
+    <FrameLayout
+            android:visibility="gone"
+            android:clickable="true"
+            android:id="@+id/frameLayoutProgress"
+            android:background="#0000"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:focusable="true">
+        
+        <ProgressBar
+                android:layout_gravity="center"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+    </FrameLayout>
+
+</FrameLayout>
