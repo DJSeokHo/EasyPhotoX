@@ -21,7 +21,6 @@ import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentTransaction
 import com.google.common.util.concurrent.ListenableFuture
-import com.swein.androidkotlintool.framework.module.shcameraphoto.camera.NormalImageRealTimeAnalyzer
 import com.swein.easyphotox.album.selector.AlbumSelectorViewHolder
 import com.swein.easyphotox.resultprocessor.SHCameraPhotoResultProcessor
 import com.swein.easyphotox.shselectedimageviewholder.SHSelectedImageViewHolder

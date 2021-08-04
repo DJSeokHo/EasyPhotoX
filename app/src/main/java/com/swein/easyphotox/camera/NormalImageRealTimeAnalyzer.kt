@@ -1,7 +1,6 @@
-package com.swein.androidkotlintool.framework.module.shcameraphoto.camera
+package com.swein.easyphotox.camera
 
 import android.graphics.*
-import android.os.Build
 import androidx.camera.core.ImageAnalysis
 import androidx.camera.core.ImageProxy
 import java.io.ByteArrayOutputStream
@@ -20,18 +19,12 @@ class NormalImageRealTimeAnalyzer(private val normalImageRealTimeAnalyzerDelegat
         fun onBitmap(bitmap: Bitmap, degree: Int)
     }
 
-    companion object {
-        private const val TAG = "NormalImageRealTimeAnalyzer"
-    }
-
     private val yuvFormats = mutableListOf(ImageFormat.YUV_420_888)
 
     private var finish: Boolean = false
 
     init {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            yuvFormats.addAll(listOf(ImageFormat.YUV_422_888, ImageFormat.YUV_444_888))
-        }
+        yuvFormats.addAll(listOf(ImageFormat.YUV_422_888, ImageFormat.YUV_444_888))
     }
 
     override fun analyze(image: ImageProxy) {

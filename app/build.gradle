@@ -18,17 +18,17 @@ afterEvaluate {
                 // You can then customize attributes of the publication as shown below.
                 groupId = 'com.swein.easyphotox'
                 artifactId = 'EasyPhotoX'
-                version = '1.0.9'
+                version = '1.0.10'
             }
             // Creates a Maven publication called “debug”.
-            debug(MavenPublication) {
-                // Applies the component for the debug build variant.
-                from components.debug
-
-                groupId = 'com.swein.easyphotox'
-                artifactId = 'EasyPhotoX-debug'
-                version = '1.0.9'
-            }
+//            debug(MavenPublication) {
+//                // Applies the component for the debug build variant.
+//                from components.debug
+//
+//                groupId = 'com.swein.easyphotox'
+//                artifactId = 'EasyPhotoX-debug'
+//                version = '1.0.10'
+//            }
         }
     }
 }
