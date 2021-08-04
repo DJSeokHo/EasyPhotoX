@@ -2,7 +2,6 @@ package com.swein.easyphotox.album.selector
 
 import android.content.Context
 import android.net.Uri
-import android.os.Build
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.TextView
@@ -15,8 +14,6 @@ import com.swein.easyphotox.album.selector.adapter.AlbumSelectorAdapter
 import com.swein.easyphotox.util.log.ILog
 import com.swein.easyphotox.util.thread.ThreadUtility
 import com.swein.easyphotox.R
-import com.swein.easyphotox.util.eventsplitshot.eventcenter.EventCenter
-import com.swein.easyphotox.util.eventsplitshot.subject.ESSArrows
 
 class AlbumSelectorViewHolder(
     context: Context,
@@ -98,15 +95,12 @@ class AlbumSelectorViewHolder(
                     ILog.debug(TAG, "${selectedList[i].imageUri.path} ${selectedList[i].isSelected}")
                 }
 
-                if (selectedList.size >= maxSelect) {
-                    EventCenter.sendEvent(
-                        ESSArrows.DISABLE_LIST_ITEM_CLICK,
-                        this,
-                        null
-                    )
+                if (selectedList.size < maxSelect) {
+
+                    albumSelectorAdapter.enableClick(true)
                 }
                 else {
-                    EventCenter.sendEvent(ESSArrows.ENABLE_LIST_ITEM_CLICK, this, null)
+                    albumSelectorAdapter.enableClick(false)
                 }
 
                 textViewAction.text = if (getSelectedImagePath().isEmpty()) {
@@ -127,46 +121,39 @@ class AlbumSelectorViewHolder(
 
     private fun reload() {
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+        ThreadUtility.startThread {
 
-            ThreadUtility.startThread {
+            AlbumSelectorWrapper.scanMediaFile(view.context, 0, 50, { albumSelectorItemBeanList ->
 
-                AlbumSelectorWrapper.scanMediaFile(view.context, 0, 50, { albumSelectorItemBeanList ->
-//                AlbumSelectorWrapper.scanFile(view.context, { albumSelectorItemBeanList ->
+                ThreadUtility.startUIThread(0) {
 
-                    ThreadUtility.startUIThread(0) {
+                    albumSelectorAdapter.reload(albumSelectorItemBeanList)
+                }
 
-                        albumSelectorAdapter.reload(albumSelectorItemBeanList)
-                    }
-
-                }, {
-                    ThreadUtility.startUIThread(0) {
-                        ILog.debug(TAG, "error")
-                    }
-                })
-            }
+            }, {
+                ThreadUtility.startUIThread(0) {
+                    ILog.debug(TAG, "error")
+                }
+            })
         }
     }
 
     private fun loadMore() {
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+        ThreadUtility.startThread {
 
-            ThreadUtility.startThread {
+            AlbumSelectorWrapper.scanMediaFile(view.context, albumSelectorAdapter.itemCount, 50, { albumSelectorItemBeanList ->
 
-                AlbumSelectorWrapper.scanMediaFile(view.context, albumSelectorAdapter.itemCount, 50, { albumSelectorItemBeanList ->
+                ThreadUtility.startUIThread(0) {
 
-                    ThreadUtility.startUIThread(0) {
+                    albumSelectorAdapter.loadMore(albumSelectorItemBeanList)
+                }
 
-                        albumSelectorAdapter.loadMore(albumSelectorItemBeanList)
-                    }
-
-                }, {
-                    ThreadUtility.startUIThread(0) {
-                        ILog.debug(TAG, "error")
-                    }
-                })
-            }
+            }, {
+                ThreadUtility.startUIThread(0) {
+                    ILog.debug(TAG, "error")
+                }
+            })
         }
     }
 

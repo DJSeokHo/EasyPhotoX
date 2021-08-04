@@ -19,6 +19,10 @@ class AlbumSelectorAdapter(
 
     var albumSelectorItemBeanList: MutableList<AlbumSelectorItemBean> = mutableListOf()
 
+    var enableClick = true
+
+    var itemIndexMap = mutableMapOf<Int, Int>()
+
     override fun onCreateViewHolder(p0: ViewGroup, p1: Int): AlbumSelectorItemViewHolder {
         val view = LayoutInflater.from(p0.context).inflate(R.layout.view_holder_album_selector_item, p0, false)
         return AlbumSelectorItemViewHolder(view)
@@ -38,8 +42,9 @@ class AlbumSelectorAdapter(
             override fun onSelected() {
                 delegate.onSelected()
             }
-
         }
+
+        albumSelectorItemViewHolder.enableClick = enableClick
 
         albumSelectorItemViewHolder.updateView()
 
@@ -59,6 +64,18 @@ class AlbumSelectorAdapter(
     fun loadMore(albumSelectorItemBeanList: MutableList<AlbumSelectorItemBean>) {
         this.albumSelectorItemBeanList.addAll(albumSelectorItemBeanList)
         notifyItemRangeChanged(albumSelectorItemBeanList.size - albumSelectorItemBeanList.size + 1,albumSelectorItemBeanList.size)
+    }
+
+    @SuppressLint("NotifyDataSetChanged")
+    fun enableClick(enableClick: Boolean) {
+
+        if (this.enableClick == enableClick) {
+            return
+        }
+
+        this.enableClick = enableClick
+
+
     }
 
 }

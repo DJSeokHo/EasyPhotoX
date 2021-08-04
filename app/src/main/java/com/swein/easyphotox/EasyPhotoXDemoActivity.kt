@@ -19,9 +19,9 @@ class EasyPhotoXDemoActivity : AppCompatActivity() {
             "Permission",
             "permissions are necessary",
             "setting",
-            Manifest.permission.CAMERA,
-            Manifest.permission.READ_EXTERNAL_STORAGE,
-            Manifest.permission.WRITE_EXTERNAL_STORAGE
+            listOf(Manifest.permission.CAMERA,
+                Manifest.permission.READ_EXTERNAL_STORAGE,
+                Manifest.permission.WRITE_EXTERNAL_STORAGE)
         ) {
             startCamera()
         }
@@ -29,10 +29,10 @@ class EasyPhotoXDemoActivity : AppCompatActivity() {
 
     private fun startCamera() {
 
-        supportFragmentManager.beginTransaction()
-            .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
-            .replace(R.id.container, EasyPhotoXFragment.newInstance(10), EasyPhotoXFragment.TAG)
-            .commitAllowingStateLoss()
+        EasyPhotoXFragment.startFragment(this, R.id.container, 10) {
+
+        }
+
     }
 
     override fun onRequestPermissionsResult(

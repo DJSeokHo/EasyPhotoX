@@ -5,8 +5,7 @@ import android.widget.ImageView
 import androidx.recyclerview.widget.RecyclerView
 import com.swein.easyphotox.R
 import com.swein.easyphotox.album.albumselectorwrapper.bean.AlbumSelectorItemBean
-import com.swein.easyphotox.util.eventsplitshot.eventcenter.EventCenter
-import com.swein.easyphotox.util.eventsplitshot.subject.ESSArrows
+import com.swein.easyphotox.util.glide.SHGlide
 import java.lang.ref.WeakReference
 
 class AlbumSelectorItemViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
@@ -24,29 +23,17 @@ class AlbumSelectorItemViewHolder(itemView: View) : RecyclerView.ViewHolder(item
 
     var albumSelectorItemViewHolderDelegate: AlbumSelectorItemViewHolderDelegate? = null
 
-    private var click = true
+    // flag
+    var enableClick = true
+    // flag
+
+    var index = -1
 
     init {
 
         findView()
         setListener()
         initView()
-    }
-
-    private fun initESS() {
-        EventCenter.addEventObserver(
-            ESSArrows.ENABLE_LIST_ITEM_CLICK, this, object : EventCenter.EventRunnable {
-                override fun run(arrow: String, poster: Any, data: MutableMap<String, Any>?) {
-                    click = true
-                }
-            })
-
-        EventCenter.addEventObserver(
-            ESSArrows.DISABLE_LIST_ITEM_CLICK, this, object : EventCenter.EventRunnable {
-                override fun run(arrow: String, poster: Any, data: MutableMap<String, Any>?) {
-                    click = false
-                }
-            })
     }
 
     private fun findView() {
@@ -60,7 +47,7 @@ class AlbumSelectorItemViewHolder(itemView: View) : RecyclerView.ViewHolder(item
     private fun setListener() {
 
         imageViewCheck.setOnClickListener {
-            if (!albumSelectorItemBean.isSelected && !click) {
+            if (!albumSelectorItemBean.isSelected && !enableClick) {
                 return@setOnClickListener
             }
             albumSelectorItemBean.isSelected = !albumSelectorItemBean.isSelected
@@ -68,7 +55,7 @@ class AlbumSelectorItemViewHolder(itemView: View) : RecyclerView.ViewHolder(item
         }
 
         imageView.setOnClickListener {
-            if (!albumSelectorItemBean.isSelected && !click) {
+            if (!albumSelectorItemBean.isSelected && !enableClick) {
                 return@setOnClickListener
             }
             albumSelectorItemBean.isSelected = !albumSelectorItemBean.isSelected
@@ -85,33 +72,22 @@ class AlbumSelectorItemViewHolder(itemView: View) : RecyclerView.ViewHolder(item
 
     fun updateView() {
 
-        view.get()?.let {
+        toggleCheck()
 
-            initESS()
-            toggleCheck()
-
-            imageView.post {
-                imageView.setImageBitmap(null)
-                imageView.setImageURI(albumSelectorItemBean.imageUri)
-            }
+        imageView.post {
+            SHGlide.setImage(albumSelectorItemBean.imageUri, imageView, imageView.width, imageView.height, 0.7f)
         }
     }
 
     private fun toggleCheck() {
         albumSelectorItemViewHolderDelegate!!.onSelected()
+
         if (albumSelectorItemBean.isSelected) {
             imageViewCheck.setImageResource(R.mipmap.ti_check)
-        } else {
+        }
+        else {
             imageViewCheck.setImageResource(R.mipmap.ti_un_check)
         }
-    }
-
-    private fun removeESS() {
-        EventCenter.removeAllObserver(this)
-    }
-
-    protected fun finalize() {
-        removeESS()
     }
 
 }

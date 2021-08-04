@@ -13,12 +13,13 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.*
+import androidx.appcompat.app.AppCompatActivity
 import androidx.camera.core.*
 import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.camera.view.PreviewView
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.FragmentActivity
+import androidx.fragment.app.FragmentTransaction
 import com.google.common.util.concurrent.ListenableFuture
 import com.swein.androidkotlintool.framework.module.shcameraphoto.camera.NormalImageRealTimeAnalyzer
 import com.swein.easyphotox.album.selector.AlbumSelectorViewHolder
@@ -26,8 +27,7 @@ import com.swein.easyphotox.resultprocessor.SHCameraPhotoResultProcessor
 import com.swein.easyphotox.shselectedimageviewholder.SHSelectedImageViewHolder
 import com.swein.easyphotox.shselectedimageviewholder.adapter.item.ImageSelectedItemBean
 import com.swein.easyphotox.util.date.DateUtility
-import com.swein.easyphotox.util.eventsplitshot.eventcenter.EventCenter
-import com.swein.easyphotox.util.eventsplitshot.subject.ESSArrows
+import com.swein.easyphotox.util.glide.SHGlide
 import com.swein.easyphotox.util.log.ILog
 import com.swein.easyphotox.util.sound.audiomanager.AudioManagerUtility
 import com.swein.easyphotox.util.sound.mediaplayer.MediaPlayerUtility
@@ -35,6 +35,7 @@ import com.swein.easyphotox.util.theme.ThemeUtility
 import com.swein.easyphotox.util.thread.ThreadUtility
 
 import java.io.File
+import java.lang.ref.WeakReference
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
 import kotlin.math.abs
@@ -48,17 +49,29 @@ class EasyPhotoXFragment : Fragment() {
         const val TAG = "EasyCameraPhotoFragment"
         private const val PHOTO_EXTENSION = ".jpg"
 
-        @JvmStatic
-        fun newInstance(limit: Int) =
-            EasyPhotoXFragment().apply {
+        fun startFragment(activity: AppCompatActivity, fragmentContainer: Int, limit: Int, onImageSelected: (MutableList<String>) -> Unit) {
+
+            val fragment = EasyPhotoXFragment().apply {
                 arguments = Bundle().apply {
                     putInt("limit", limit)
                 }
+
+                this.onImageSelected = WeakReference(onImageSelected)
             }
+
+            activity.supportActionBar?.hide()
+            activity.supportFragmentManager.beginTransaction()
+                .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
+                .replace(fragmentContainer, fragment, TAG)
+                .commitAllowingStateLoss()
+
+        }
 
         private const val RATIO_4_3_VALUE = 4.0 / 3.0
         private const val RATIO_16_9_VALUE = 16.0 / 9.0
     }
+
+    var onImageSelected: WeakReference<(MutableList<String>) -> Unit>? = null
 
     private lateinit var imageButtonTake: ImageButton
     private lateinit var imageButtonSwitchCamera: ImageButton
@@ -80,7 +93,6 @@ class EasyPhotoXFragment : Fragment() {
     private var flash = false
 
     private var limit = 0
-    private var fromWhere = ""
 
     private var selectedImageList = mutableListOf<ImageSelectedItemBean>()
     private var shSelectedImageViewHolder: SHSelectedImageViewHolder? = null
@@ -134,7 +146,6 @@ class EasyPhotoXFragment : Fragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
         checkBundle()
         initData()
     }
@@ -151,7 +162,6 @@ class EasyPhotoXFragment : Fragment() {
     private fun checkBundle() {
         arguments?.let {
             limit = it.getInt("limit", 0)
-            fromWhere = it.getString("fromWhere", "")
         }
 
         ILog.debug(TAG, "limit ?? $limit")
@@ -184,10 +194,8 @@ class EasyPhotoXFragment : Fragment() {
             displayId = previewView.display.displayId
 
             // Set up the camera and its use cases
-            activity?.let {
-                updateFlashImage()
-                initCamera(it)
-            }
+            updateFlashImage()
+            initCamera(view.context)
         }
     }
 
@@ -344,13 +352,8 @@ class EasyPhotoXFragment : Fragment() {
                     val pathList = SHCameraPhotoResultProcessor.uriListToCacheFilePathList(context, list)
 
                     // ok
-                    HashMap<String, Any>().apply {
-                        this["list"] = pathList
-                        this["fromWhere"] = fromWhere
-                    }.also { hashMap ->
-                        ILog.debug(TAG, "send image $pathList size")
-
-                        EventCenter.sendEvent(ESSArrows.SET_SELECTED_IMAGE_LIST, this, hashMap)
+                    onImageSelected?.get()?.let {
+                        it(pathList)
                     }
                 }
 
@@ -387,16 +390,16 @@ class EasyPhotoXFragment : Fragment() {
         return AspectRatio.RATIO_16_9
     }
 
-    private fun initCamera(activity: FragmentActivity) {
+    private fun initCamera(context: Context) {
 
-        cameraProviderFuture = ProcessCameraProvider.getInstance(activity)
+        cameraProviderFuture = ProcessCameraProvider.getInstance(context)
         cameraProviderFuture.addListener({
 
             initCamera()
             checkBackFrontCamera()
             bindCameraUseCases()
 
-        }, ContextCompat.getMainExecutor(activity))
+        }, ContextCompat.getMainExecutor(context))
     }
 
     private fun checkBackFrontCamera() {
@@ -561,8 +564,16 @@ class EasyPhotoXFragment : Fragment() {
                         imageView.setImageBitmap(null)
                     } else {
                         textViewImageCount.text = selectedImageList.size.toString()
-
-                        imageView.setImageURI(selectedImageList[0].imageUri)
+                        SHGlide.setImageBitmap(
+                            context,
+                            selectedImageList[0].imageUri,
+                            imageView,
+                            null,
+                            imageView.width,
+                            imageView.height,
+                            0f,
+                            0f
+                        )
                     }
 
                     textViewAction.text = if (selectedImageList.isEmpty()) {
@@ -638,7 +649,8 @@ class EasyPhotoXFragment : Fragment() {
 
     private fun togglePreviewThumbnail(imageUri: Uri) {
 
-        imageView.setImageURI(imageUri)
+        SHGlide.setImageBitmap(context, imageUri, imageView, null, imageView.width, imageView.height, 0f, 0f)
+
         ILog.debug(TAG, selectedImageList.size.toString())
         textViewImageCount.text = selectedImageList.size.toString()
 
