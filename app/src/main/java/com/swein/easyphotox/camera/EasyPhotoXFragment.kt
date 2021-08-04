@@ -48,14 +48,16 @@ class EasyPhotoXFragment : Fragment() {
         const val TAG = "EasyCameraPhotoFragment"
         private const val PHOTO_EXTENSION = ".jpg"
 
-        fun startFragment(activity: AppCompatActivity, fragmentContainer: Int, limit: Int, onImageSelected: (MutableList<String>) -> Unit) {
+        fun startFragment(activity: AppCompatActivity, fragmentContainer: Int, imageLimit: Int,
+                          onImageSelected: (MutableList<String>) -> Unit, onCancel: () -> Unit) {
 
             val fragment = EasyPhotoXFragment().apply {
                 arguments = Bundle().apply {
-                    putInt("limit", limit)
+                    putInt("limit", imageLimit)
                 }
 
                 this.onImageSelected = WeakReference(onImageSelected)
+                this.onCancel = WeakReference(onCancel)
             }
 
             activity.supportActionBar?.hide()
@@ -71,6 +73,7 @@ class EasyPhotoXFragment : Fragment() {
     }
 
     var onImageSelected: WeakReference<(MutableList<String>) -> Unit>? = null
+    var onCancel: WeakReference<() -> Unit>? = null
 
     private lateinit var imageButtonTake: ImageButton
     private lateinit var imageButtonSwitchCamera: ImageButton
@@ -165,7 +168,9 @@ class EasyPhotoXFragment : Fragment() {
 
         EPXLog.debug(TAG, "limit ?? $limit")
         if(limit == 0) {
-            activity?.finish()
+            onCancel?.get()?.let {
+                it()
+            }
         }
     }
 
@@ -337,7 +342,9 @@ class EasyPhotoXFragment : Fragment() {
             context?.let { context ->
 
                 if(textViewAction.text == getString(R.string.camera_cancel)) {
-                    activity?.finish()
+                    onCancel?.get()?.let {
+                        it()
+                    }
                     return@setOnClickListener
                 }
 
@@ -355,8 +362,6 @@ class EasyPhotoXFragment : Fragment() {
                         it(pathList)
                     }
                 }
-
-                activity?.finish()
 
             }
 
@@ -404,7 +409,9 @@ class EasyPhotoXFragment : Fragment() {
     private fun checkBackFrontCamera() {
 
         if(!hasBackCamera() && !hasFrontCamera()) {
-            activity?.finish()
+            onCancel?.get()?.let {
+                it()
+            }
         }
 
         if(hasBackCamera() && hasFrontCamera()) {
