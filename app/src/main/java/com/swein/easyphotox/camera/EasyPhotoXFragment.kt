@@ -72,8 +72,8 @@ class EasyPhotoXFragment : Fragment() {
         private const val RATIO_16_9_VALUE = 16.0 / 9.0
     }
 
-    var onImageSelected: WeakReference<(MutableList<String>) -> Unit>? = null
-    var onCancel: WeakReference<() -> Unit>? = null
+    private lateinit var onImageSelected: WeakReference<(MutableList<String>) -> Unit>
+    private lateinit var onCancel: WeakReference<() -> Unit>
 
     private lateinit var imageButtonTake: ImageButton
     private lateinit var imageButtonSwitchCamera: ImageButton
@@ -168,7 +168,7 @@ class EasyPhotoXFragment : Fragment() {
 
         EPXLog.debug(TAG, "limit ?? $limit")
         if(limit == 0) {
-            onCancel?.get()?.let {
+            onCancel.get()?.let {
                 it()
             }
         }
@@ -342,8 +342,8 @@ class EasyPhotoXFragment : Fragment() {
             context?.let { context ->
 
                 if(textViewAction.text == getString(R.string.camera_cancel)) {
-                    onCancel?.get()?.let {
-                        it()
+                    onCancel.get()?.let { onCancel ->
+                        onCancel()
                     }
                     return@setOnClickListener
                 }
@@ -358,8 +358,8 @@ class EasyPhotoXFragment : Fragment() {
                     val pathList = SHCameraPhotoResultProcessor.uriListToCacheFilePathList(context, list)
 
                     // ok
-                    onImageSelected?.get()?.let {
-                        it(pathList)
+                    onImageSelected.get()?.let { onImageSelected ->
+                        onImageSelected(pathList)
                     }
                 }
 
@@ -409,8 +409,8 @@ class EasyPhotoXFragment : Fragment() {
     private fun checkBackFrontCamera() {
 
         if(!hasBackCamera() && !hasFrontCamera()) {
-            onCancel?.get()?.let {
-                it()
+            onCancel.get()?.let { onCancel ->
+                onCancel()
             }
         }
 
@@ -709,7 +709,7 @@ class EasyPhotoXFragment : Fragment() {
     override fun onDestroy() {
         super.onDestroy()
 
-        onImageSelected?.clear()
-        onCancel?.clear()
+        onImageSelected.clear()
+        onCancel.clear()
     }
 }
