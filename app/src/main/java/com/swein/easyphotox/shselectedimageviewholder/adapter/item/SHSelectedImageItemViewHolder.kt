@@ -5,7 +5,7 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.swein.easyphotox.R
-import com.swein.easyphotox.util.glide.SHGlide
+import com.swein.easyphotox.util.glide.EPXGlide
 import java.lang.ref.WeakReference
 
 class SHSelectedImageItemViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
@@ -53,7 +53,7 @@ class SHSelectedImageItemViewHolder(itemView: View) : RecyclerView.ViewHolder(it
     fun updateView() {
 
         imageView.post {
-            SHGlide.setImage(imageSelectedItemBean.imageUri, imageView, imageView.width, imageView.height, 0.7f)
+            EPXGlide.setImage(imageSelectedItemBean.imageUri, imageView, imageView.width, imageView.height, 0.7f)
         }
     }
 }

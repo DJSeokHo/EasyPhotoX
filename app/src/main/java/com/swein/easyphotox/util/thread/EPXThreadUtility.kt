@@ -4,7 +4,7 @@ import android.os.Handler
 import android.os.Looper
 import java.util.concurrent.Executors
 
-class ThreadUtility {
+class EPXThreadUtility {
 
     companion object {
 

@@ -3,7 +3,7 @@ package com.swein.easyphotox.util.sound.mediaplayer
 import android.content.Context
 import android.media.MediaPlayer
 
-object MediaPlayerUtility {
+object EPXMediaPlayerUtility {
 
     private lateinit var mediaPlayer: MediaPlayer
 

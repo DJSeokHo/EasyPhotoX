@@ -5,7 +5,7 @@ import android.widget.ImageView
 import androidx.recyclerview.widget.RecyclerView
 import com.swein.easyphotox.R
 import com.swein.easyphotox.album.albumselectorwrapper.bean.AlbumSelectorItemBean
-import com.swein.easyphotox.util.glide.SHGlide
+import com.swein.easyphotox.util.glide.EPXGlide
 import java.lang.ref.WeakReference
 
 class AlbumSelectorItemViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
@@ -75,7 +75,7 @@ class AlbumSelectorItemViewHolder(itemView: View) : RecyclerView.ViewHolder(item
         toggleCheck()
 
         imageView.post {
-            SHGlide.setImage(albumSelectorItemBean.imageUri, imageView, imageView.width, imageView.height, 0.7f)
+            EPXGlide.setImage(albumSelectorItemBean.imageUri, imageView, imageView.width, imageView.height, 0.7f)
         }
     }
 

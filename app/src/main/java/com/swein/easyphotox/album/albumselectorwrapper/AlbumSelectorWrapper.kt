@@ -10,7 +10,7 @@ import android.os.Environment
 import android.provider.MediaStore
 import androidx.annotation.RequiresApi
 import com.swein.easyphotox.album.albumselectorwrapper.bean.AlbumSelectorItemBean
-import com.swein.easyphotox.util.log.ILog
+import com.swein.easyphotox.util.log.EPXLog
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -23,7 +23,7 @@ object AlbumSelectorWrapper {
     fun scanMediaFile(context: Context, offset: Int, limit: Int,
                       onSuccess: (albumSelectorItemBeanList: MutableList<AlbumSelectorItemBean>) -> Unit, onError: () -> Unit) {
         val albumSelectorItemBeanList: MutableList<AlbumSelectorItemBean> = mutableListOf()
-        ILog.debug(TAG, "scanMediaFile")
+        EPXLog.debug(TAG, "scanMediaFile")
         if (Environment.getExternalStorageState() != Environment.MEDIA_MOUNTED) {
             // storage error
             onError()
@@ -45,7 +45,7 @@ object AlbumSelectorWrapper {
 
         val selection = "${MediaStore.Images.Media.MIME_TYPE} = ? or ${MediaStore.Images.Media.MIME_TYPE} = ? or ${MediaStore.Images.Media.MIME_TYPE} = ?"
         val selectionArgs = arrayOf("image/jpeg", "image/jpg", "image/png")
-        ILog.debug("??", "start")
+        EPXLog.debug("??", "start")
             contentResolver.query(
 
             uri, projection,
@@ -66,7 +66,7 @@ object AlbumSelectorWrapper {
             }, null
 
         )?.use { cursor ->
-            ILog.debug(TAG, "cursor ${cursor.count}")
+            EPXLog.debug(TAG, "cursor ${cursor.count}")
             while (cursor.moveToNext()) {
                 /*
                 The number you are getting from your cursor is in the format of Unix Time which counts the number of seconds elapsed since 1 January 1970.
@@ -81,11 +81,11 @@ object AlbumSelectorWrapper {
                 val displayName = cursor.getString(cursor.getColumnIndex(MediaStore.Images.Media.DISPLAY_NAME))
                 val title = cursor.getString(cursor.getColumnIndex(MediaStore.Images.Media.TITLE))
 
-                ILog.debug(TAG, "size is $size")
-                ILog.debug(TAG, "dateAdded is $dateAdded")
-                ILog.debug(TAG, "dateModified is $dateModified")
-                ILog.debug(TAG, "displayName is $displayName")
-                ILog.debug(TAG, "title is $title")
+                EPXLog.debug(TAG, "size is $size")
+                EPXLog.debug(TAG, "dateAdded is $dateAdded")
+                EPXLog.debug(TAG, "dateModified is $dateModified")
+                EPXLog.debug(TAG, "displayName is $displayName")
+                EPXLog.debug(TAG, "title is $title")
 
                 val imageUrl = ContentUris.withAppendedId(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, id)
                 val albumSelectorItemBean  = AlbumSelectorItemBean()
@@ -164,14 +164,14 @@ object AlbumSelectorWrapper {
                 val displayName = cursor.getString(cursor.getColumnIndex(MediaStore.Files.FileColumns.DISPLAY_NAME))
                 val title = cursor.getString(cursor.getColumnIndex(MediaStore.Files.FileColumns.TITLE))
 
-                ILog.debug(TAG, "size is $size")
-                ILog.debug(TAG, "dateAdded is $dateAdded")
-                ILog.debug(TAG, "dateModified is $dateModified")
-                ILog.debug(TAG, "displayName is $displayName")
-                ILog.debug(TAG, "title is $title")
+                EPXLog.debug(TAG, "size is $size")
+                EPXLog.debug(TAG, "dateAdded is $dateAdded")
+                EPXLog.debug(TAG, "dateModified is $dateModified")
+                EPXLog.debug(TAG, "displayName is $displayName")
+                EPXLog.debug(TAG, "title is $title")
 
                 val imageUri = ContentUris.withAppendedId(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, id)
-                ILog.debug(TAG, "imageUri is $imageUri")
+                EPXLog.debug(TAG, "imageUri is $imageUri")
 
                 val albumSelectorItemBean  = AlbumSelectorItemBean()
 
@@ -230,14 +230,14 @@ object AlbumSelectorWrapper {
                 val displayName = cursor.getString(cursor.getColumnIndex(MediaStore.Files.FileColumns.DISPLAY_NAME))
                 val title = cursor.getString(cursor.getColumnIndex(MediaStore.Files.FileColumns.TITLE))
 
-                ILog.debug(TAG, "size is $size")
-                ILog.debug(TAG, "dateAdded is $dateAdded")
-                ILog.debug(TAG, "dateModified is $dateModified")
-                ILog.debug(TAG, "displayName is $displayName")
-                ILog.debug(TAG, "title is $title")
+                EPXLog.debug(TAG, "size is $size")
+                EPXLog.debug(TAG, "dateAdded is $dateAdded")
+                EPXLog.debug(TAG, "dateModified is $dateModified")
+                EPXLog.debug(TAG, "displayName is $displayName")
+                EPXLog.debug(TAG, "title is $title")
 
                 val imageUri = ContentUris.withAppendedId(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, id)
-                ILog.debug(TAG, "imageUri is $imageUri")
+                EPXLog.debug(TAG, "imageUri is $imageUri")
 
                 val albumSelectorItemBean  = AlbumSelectorItemBean()
 

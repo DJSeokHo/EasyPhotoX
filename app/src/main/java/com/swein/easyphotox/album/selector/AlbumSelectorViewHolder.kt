@@ -11,8 +11,8 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.swein.easyphotox.album.albumselectorwrapper.AlbumSelectorWrapper
 import com.swein.easyphotox.album.albumselectorwrapper.bean.AlbumSelectorItemBean
 import com.swein.easyphotox.album.selector.adapter.AlbumSelectorAdapter
-import com.swein.easyphotox.util.log.ILog
-import com.swein.easyphotox.util.thread.ThreadUtility
+import com.swein.easyphotox.util.log.EPXLog
+import com.swein.easyphotox.util.thread.EPXThreadUtility
 import com.swein.easyphotox.R
 
 class AlbumSelectorViewHolder(
@@ -92,7 +92,7 @@ class AlbumSelectorViewHolder(
                 }
 
                 for (i in selectedList.indices) {
-                    ILog.debug(TAG, "${selectedList[i].imageUri.path} ${selectedList[i].isSelected}")
+                    EPXLog.debug(TAG, "${selectedList[i].imageUri.path} ${selectedList[i].isSelected}")
                 }
 
                 if (selectedList.size < maxSelect) {
@@ -121,18 +121,18 @@ class AlbumSelectorViewHolder(
 
     private fun reload() {
 
-        ThreadUtility.startThread {
+        EPXThreadUtility.startThread {
 
             AlbumSelectorWrapper.scanMediaFile(view.context, 0, 50, { albumSelectorItemBeanList ->
 
-                ThreadUtility.startUIThread(0) {
+                EPXThreadUtility.startUIThread(0) {
 
                     albumSelectorAdapter.reload(albumSelectorItemBeanList)
                 }
 
             }, {
-                ThreadUtility.startUIThread(0) {
-                    ILog.debug(TAG, "error")
+                EPXThreadUtility.startUIThread(0) {
+                    EPXLog.debug(TAG, "error")
                 }
             })
         }
@@ -140,18 +140,18 @@ class AlbumSelectorViewHolder(
 
     private fun loadMore() {
 
-        ThreadUtility.startThread {
+        EPXThreadUtility.startThread {
 
             AlbumSelectorWrapper.scanMediaFile(view.context, albumSelectorAdapter.itemCount, 50, { albumSelectorItemBeanList ->
 
-                ThreadUtility.startUIThread(0) {
+                EPXThreadUtility.startUIThread(0) {
 
                     albumSelectorAdapter.loadMore(albumSelectorItemBeanList)
                 }
 
             }, {
-                ThreadUtility.startUIThread(0) {
-                    ILog.debug(TAG, "error")
+                EPXThreadUtility.startUIThread(0) {
+                    EPXLog.debug(TAG, "error")
                 }
             })
         }

@@ -4,7 +4,7 @@ import android.content.Context
 import android.media.AudioManager
 import kotlin.math.roundToInt
 
-object AudioManagerUtility {
+object EPXAudioManagerUtility {
 
     private lateinit var audioManager: AudioManager
     private var maxVolume = 0

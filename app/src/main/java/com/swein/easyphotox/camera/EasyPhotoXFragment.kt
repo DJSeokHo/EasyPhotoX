@@ -26,13 +26,13 @@ import com.swein.easyphotox.album.selector.AlbumSelectorViewHolder
 import com.swein.easyphotox.resultprocessor.SHCameraPhotoResultProcessor
 import com.swein.easyphotox.shselectedimageviewholder.SHSelectedImageViewHolder
 import com.swein.easyphotox.shselectedimageviewholder.adapter.item.ImageSelectedItemBean
-import com.swein.easyphotox.util.date.DateUtility
-import com.swein.easyphotox.util.glide.SHGlide
-import com.swein.easyphotox.util.log.ILog
-import com.swein.easyphotox.util.sound.audiomanager.AudioManagerUtility
-import com.swein.easyphotox.util.sound.mediaplayer.MediaPlayerUtility
-import com.swein.easyphotox.util.theme.ThemeUtility
-import com.swein.easyphotox.util.thread.ThreadUtility
+import com.swein.easyphotox.util.date.EPXDateUtility
+import com.swein.easyphotox.util.glide.EPXGlide
+import com.swein.easyphotox.util.log.EPXLog
+import com.swein.easyphotox.util.sound.audiomanager.EPXAudioManagerUtility
+import com.swein.easyphotox.util.sound.mediaplayer.EPXMediaPlayerUtility
+import com.swein.easyphotox.util.theme.EPXThemeUtility
+import com.swein.easyphotox.util.thread.EPXThreadUtility
 
 import java.io.File
 import java.lang.ref.WeakReference
@@ -101,7 +101,7 @@ class EasyPhotoXFragment : Fragment() {
     private lateinit var frameLayoutRoot: FrameLayout
     private var albumSelectorViewHolder: AlbumSelectorViewHolder? = null
 
-    private var fullScreenRatio: Float = 0f
+//    private var fullScreenRatio: Float = 0f
 
     private val displayManager by lazy {
         requireContext().getSystemService(Context.DISPLAY_SERVICE) as DisplayManager
@@ -113,7 +113,7 @@ class EasyPhotoXFragment : Fragment() {
         override fun onDisplayRemoved(displayId: Int) = Unit
         override fun onDisplayChanged(displayId: Int) = view?.let { view ->
             if (displayId == this@EasyPhotoXFragment.displayId) {
-                ILog.debug(TAG, "Rotation changed: ${view.display.rotation}")
+                EPXLog.debug(TAG, "Rotation changed: ${view.display.rotation}")
                 imageCapture.targetRotation = view.display.rotation
                 imageAnalysis.targetRotation = view.display.rotation
             }
@@ -133,11 +133,11 @@ class EasyPhotoXFragment : Fragment() {
         if (newConfig.orientation == Configuration.ORIENTATION_LANDSCAPE) {
 
             // Nothing need to be done here
-            ILog.debug(TAG, "ORIENTATION_LANDSCAPE")
+            EPXLog.debug(TAG, "ORIENTATION_LANDSCAPE")
 
         }
         else {
-            ILog.debug(TAG, "ORIENTATION_PORTRAIT")
+            EPXLog.debug(TAG, "ORIENTATION_PORTRAIT")
             // Nothing need to be done here
         }
 
@@ -152,9 +152,9 @@ class EasyPhotoXFragment : Fragment() {
 
     private fun initAudio(rootView: View) {
 
-        AudioManagerUtility.init(rootView.context)
-        MediaPlayerUtility.init(rootView.context, R.raw.camera_shutter_click) {
-            AudioManagerUtility.resetAfterPlay()
+        EPXAudioManagerUtility.init(rootView.context)
+        EPXMediaPlayerUtility.init(rootView.context, R.raw.camera_shutter_click) {
+            EPXAudioManagerUtility.resetAfterPlay()
         }
 
     }
@@ -164,7 +164,7 @@ class EasyPhotoXFragment : Fragment() {
             limit = it.getInt("limit", 0)
         }
 
-        ILog.debug(TAG, "limit ?? $limit")
+        EPXLog.debug(TAG, "limit ?? $limit")
         if(limit == 0) {
             activity?.finish()
         }
@@ -292,7 +292,7 @@ class EasyPhotoXFragment : Fragment() {
                     isReversedHorizontal = lensFacing == CameraSelector.LENS_FACING_FRONT
                 }
 
-                ILog.debug(TAG, photoFile.absolutePath)
+                EPXLog.debug(TAG, photoFile.absolutePath)
                 val outputFileOptions = ImageCapture.OutputFileOptions.Builder(photoFile)
                     .setMetadata(metadata).build()
 
@@ -302,9 +302,9 @@ class EasyPhotoXFragment : Fragment() {
                     object : ImageCapture.OnImageSavedCallback {
 
                         override fun onError(error: ImageCaptureException) {
-                            ILog.debug(TAG, error.message)
+                            EPXLog.debug(TAG, error.message)
                             error.printStackTrace()
-                            ThreadUtility.startUIThread(0) {
+                            EPXThreadUtility.startUIThread(0) {
                                 hideProgress()
                             }
                         }
@@ -312,14 +312,14 @@ class EasyPhotoXFragment : Fragment() {
                         override fun onImageSaved(outputFileResults: ImageCapture.OutputFileResults) {
 
                             val savedUri = outputFileResults.savedUri ?: Uri.fromFile(photoFile)
-                            ILog.debug(TAG, savedUri)
+                            EPXLog.debug(TAG, savedUri)
 
-                            ThreadUtility.startThread {
+                            EPXThreadUtility.startThread {
 
-                                AudioManagerUtility.setNoMute()
-                                MediaPlayerUtility.play()
+                                EPXAudioManagerUtility.setNoMute()
+                                EPXMediaPlayerUtility.play()
 
-                                ThreadUtility.startUIThread(0) {
+                                EPXThreadUtility.startUIThread(0) {
 
                                     addImage(savedUri)
 
@@ -418,7 +418,7 @@ class EasyPhotoXFragment : Fragment() {
 
     private fun initCamera() {
 
-        ILog.debug(TAG, "initCamera")
+        EPXLog.debug(TAG, "initCamera")
 
         cameraProvider = cameraProviderFuture.get()
         cameraExecutor = Executors.newSingleThreadExecutor()
@@ -429,10 +429,10 @@ class EasyPhotoXFragment : Fragment() {
 
         // Get screen metrics used to setup camera for full screen resolution
         val metrics = DisplayMetrics().also { previewView.display.getRealMetrics(it) }
-        ILog.debug(TAG, "Screen metrics: ${metrics.widthPixels} x ${metrics.heightPixels}")
+        EPXLog.debug(TAG, "Screen metrics: ${metrics.widthPixels} x ${metrics.heightPixels}")
 
         val screenAspectRatio = aspectRatio(metrics.widthPixels, metrics.heightPixels)
-        ILog.debug(TAG, "Preview aspect ratio: $screenAspectRatio")
+        EPXLog.debug(TAG, "Preview aspect ratio: $screenAspectRatio")
 
         val rotation = previewView.display.rotation
 
@@ -457,7 +457,7 @@ class EasyPhotoXFragment : Fragment() {
             // Attach the viewfinder's surface provider to preview use case
             preview.setSurfaceProvider(previewView.surfaceProvider)
         } catch (e: Exception) {
-            ILog.debug(TAG, "Use case binding failed ${e.message}")
+            EPXLog.debug(TAG, "Use case binding failed ${e.message}")
         }
     }
 
@@ -542,7 +542,7 @@ class EasyPhotoXFragment : Fragment() {
 
     private fun createFilePath(baseFolder: File): String {
 
-        return "${baseFolder}${DateUtility.getCurrentDateTimeSSSStringWithNoSpace("_")}$PHOTO_EXTENSION"
+        return "${baseFolder}${EPXDateUtility.getCurrentDateTimeSSSStringWithNoSpace("_")}$PHOTO_EXTENSION"
     }
 
     private fun showSelectedImageArea() {
@@ -564,15 +564,14 @@ class EasyPhotoXFragment : Fragment() {
                         imageView.setImageBitmap(null)
                     } else {
                         textViewImageCount.text = selectedImageList.size.toString()
-                        SHGlide.setImageBitmap(
-                            context,
+                        EPXGlide.setImage(
                             selectedImageList[0].imageUri,
                             imageView,
-                            null,
                             imageView.width,
                             imageView.height,
                             0f,
-                            0f
+                            0f,
+                            animation = true
                         )
                     }
 
@@ -649,9 +648,9 @@ class EasyPhotoXFragment : Fragment() {
 
     private fun togglePreviewThumbnail(imageUri: Uri) {
 
-        SHGlide.setImageBitmap(context, imageUri, imageView, null, imageView.width, imageView.height, 0f, 0f)
+        EPXGlide.setImage(imageUri, imageView, imageView.width, imageView.height, 0f, 0f, animation = true)
 
-        ILog.debug(TAG, selectedImageList.size.toString())
+        EPXLog.debug(TAG, selectedImageList.size.toString())
         textViewImageCount.text = selectedImageList.size.toString()
 
         textViewAction.text = if (selectedImageList.isEmpty()) {
@@ -683,14 +682,14 @@ class EasyPhotoXFragment : Fragment() {
     override fun onResume() {
         super.onResume()
         activity?.let {
-            ThemeUtility.hideSystemUI(it)
+            EPXThemeUtility.hideSystemUI(it)
         }
     }
 
     override fun onPause() {
         super.onPause()
         activity?.let {
-            ThemeUtility.showSystemUI(it)
+            EPXThemeUtility.showSystemUI(it)
         }
     }
 
