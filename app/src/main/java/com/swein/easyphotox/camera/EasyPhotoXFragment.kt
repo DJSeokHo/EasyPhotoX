@@ -34,7 +34,6 @@ import com.swein.easyphotox.util.theme.EPXThemeUtility
 import com.swein.easyphotox.util.thread.EPXThreadUtility
 
 import java.io.File
-import java.lang.ref.WeakReference
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
 import kotlin.math.abs
@@ -49,31 +48,40 @@ class EasyPhotoXFragment : Fragment() {
         private const val PHOTO_EXTENSION = ".jpg"
 
         fun startFragment(activity: AppCompatActivity, fragmentContainer: Int, imageLimit: Int,
-                          onImageSelected: (MutableList<String>) -> Unit, onCancel: () -> Unit) {
+                          onImageSelected: (MutableList<String>) -> Unit, onCloseCamera: () -> Unit) {
 
             val fragment = EasyPhotoXFragment().apply {
                 arguments = Bundle().apply {
                     putInt("limit", imageLimit)
                 }
 
-                this.onImageSelected = WeakReference(onImageSelected)
-                this.onCancel = WeakReference(onCancel)
+                this.onImageSelected = onImageSelected
+                this.onCloseCamera = onCloseCamera
             }
 
             activity.supportActionBar?.hide()
             activity.supportFragmentManager.beginTransaction()
                 .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
-                .replace(fragmentContainer, fragment, TAG)
+                .replace(fragmentContainer, fragment, "SWeinEasyCameraPhotoFragment")
                 .commitAllowingStateLoss()
 
+        }
+
+        fun destroyFragment(activity: AppCompatActivity): Boolean {
+            activity.supportFragmentManager.findFragmentByTag("SWeinEasyCameraPhotoFragment")?.let {
+                activity.supportFragmentManager.beginTransaction().setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE).remove(it).commitAllowingStateLoss()
+                return true
+            }
+
+            return false
         }
 
         private const val RATIO_4_3_VALUE = 4.0 / 3.0
         private const val RATIO_16_9_VALUE = 16.0 / 9.0
     }
 
-    private lateinit var onImageSelected: WeakReference<(MutableList<String>) -> Unit>
-    private lateinit var onCancel: WeakReference<() -> Unit>
+    private lateinit var onImageSelected: (MutableList<String>) -> Unit
+    private lateinit var onCloseCamera: () -> Unit
 
     private lateinit var imageButtonTake: ImageButton
     private lateinit var imageButtonSwitchCamera: ImageButton
@@ -168,9 +176,7 @@ class EasyPhotoXFragment : Fragment() {
 
         EPXLog.debug(TAG, "limit ?? $limit")
         if(limit == 0) {
-            onCancel.get()?.let {
-                it()
-            }
+            onCloseCamera()
         }
     }
 
@@ -342,9 +348,7 @@ class EasyPhotoXFragment : Fragment() {
             context?.let { context ->
 
                 if(textViewAction.text == getString(R.string.camera_cancel)) {
-                    onCancel.get()?.let { onCancel ->
-                        onCancel()
-                    }
+                    onCloseCamera()
                     return@setOnClickListener
                 }
 
@@ -358,9 +362,7 @@ class EasyPhotoXFragment : Fragment() {
                     val pathList = SHCameraPhotoResultProcessor.uriListToCacheFilePathList(context, list)
 
                     // ok
-                    onImageSelected.get()?.let { onImageSelected ->
-                        onImageSelected(pathList)
-                    }
+                    onImageSelected(pathList)
                 }
 
             }
@@ -409,9 +411,7 @@ class EasyPhotoXFragment : Fragment() {
     private fun checkBackFrontCamera() {
 
         if(!hasBackCamera() && !hasFrontCamera()) {
-            onCancel.get()?.let { onCancel ->
-                onCancel()
-            }
+            onCloseCamera()
         }
 
         if(hasBackCamera() && hasFrontCamera()) {
@@ -704,12 +704,5 @@ class EasyPhotoXFragment : Fragment() {
 
         cameraExecutor.shutdown()
         displayManager.unregisterDisplayListener(displayListener)
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-
-        onImageSelected.clear()
-        onCancel.clear()
     }
 }
