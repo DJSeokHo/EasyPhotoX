@@ -705,4 +705,11 @@ class EasyPhotoXFragment : Fragment() {
         cameraExecutor.shutdown()
         displayManager.unregisterDisplayListener(displayListener)
     }
+
+    override fun onDestroy() {
+        super.onDestroy()
+
+        onImageSelected?.clear()
+        onCancel?.clear()
+    }
 }
