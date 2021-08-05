@@ -4,9 +4,9 @@
 //import android.content.Intent
 //import androidx.appcompat.app.AppCompatActivity
 //import android.os.Bundle
-//import androidx.fragment.app.FragmentTransaction
 //import com.swein.easypermissionmanager.EasyPermissionManager
 //import com.swein.easyphotox.camera.EasyPhotoXFragment
+//import com.swein.easyphotox.util.log.EPXLog
 //
 //class EasyPhotoXDemoActivity : AppCompatActivity() {
 //
@@ -29,9 +29,14 @@
 //
 //    private fun startCamera() {
 //
-//        EasyPhotoXFragment.startFragment(this, R.id.container, 10) {
+//        EasyPhotoXFragment.startFragment(this, R.id.container, 10, onImageSelected = {
 //
-//        }
+//            EPXLog.debug("???", "${it.size}")
+//
+//            EasyPhotoXFragment.destroyFragment(this)
+//        }, onCloseCamera = {
+//            EasyPhotoXFragment.destroyFragment(this)
+//        })
 //
 //    }
 //
@@ -51,8 +56,8 @@
 //
 //    override fun onDestroy() {
 //
-//        supportFragmentManager.findFragmentByTag(EasyPhotoXFragment.TAG)?.let {
-//            supportFragmentManager.beginTransaction().setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE).remove(it).commitAllowingStateLoss()
+//        if (EasyPhotoXFragment.destroyFragment(this)) {
+//            return
 //        }
 //
 //        super.onDestroy()

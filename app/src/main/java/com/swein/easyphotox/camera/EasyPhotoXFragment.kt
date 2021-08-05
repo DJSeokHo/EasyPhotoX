@@ -54,7 +54,7 @@ class EasyPhotoXFragment : Fragment() {
                 arguments = Bundle().apply {
                     putInt("limit", imageLimit)
                 }
-
+                onImageSelected
                 this.onImageSelected = onImageSelected
                 this.onCloseCamera = onCloseCamera
             }
@@ -571,13 +571,11 @@ class EasyPhotoXFragment : Fragment() {
                     } else {
                         textViewImageCount.text = selectedImageList.size.toString()
                         EPXGlide.setImage(
-                            selectedImageList[0].imageUri,
                             imageView,
                             imageView.width,
                             imageView.height,
-                            0f,
-                            0f,
-                            animation = true
+                            isAnimation = true,
+                            uri = selectedImageList[0].imageUri
                         )
                     }
 
@@ -654,7 +652,7 @@ class EasyPhotoXFragment : Fragment() {
 
     private fun togglePreviewThumbnail(imageUri: Uri) {
 
-        EPXGlide.setImage(imageUri, imageView, imageView.width, imageView.height, 0f, 0f, animation = true)
+        EPXGlide.setImage(imageView, imageView.width, imageView.height, isAnimation = true, uri = imageUri)
 
         EPXLog.debug(TAG, selectedImageList.size.toString())
         textViewImageCount.text = selectedImageList.size.toString()

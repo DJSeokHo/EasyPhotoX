@@ -8,12 +8,14 @@ import android.widget.TextView
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+import com.swein.easyeventobserver.EventCenter
 import com.swein.easyphotox.album.albumselectorwrapper.AlbumSelectorWrapper
 import com.swein.easyphotox.album.albumselectorwrapper.bean.AlbumSelectorItemBean
 import com.swein.easyphotox.album.selector.adapter.AlbumSelectorAdapter
 import com.swein.easyphotox.util.log.EPXLog
 import com.swein.easyphotox.util.thread.EPXThreadUtility
 import com.swein.easyphotox.R
+import com.swein.easyphotox.constants.EPXConstants
 
 class AlbumSelectorViewHolder(
     context: Context,
@@ -95,12 +97,11 @@ class AlbumSelectorViewHolder(
                     EPXLog.debug(TAG, "${selectedList[i].imageUri.path} ${selectedList[i].isSelected}")
                 }
 
-                if (selectedList.size < maxSelect) {
-
-                    albumSelectorAdapter.enableClick(true)
+                if (selectedList.size >= maxSelect) {
+                    EventCenter.sendEvent(EPXConstants.DISABLE_LIST_ITEM_CLICK, this)
                 }
                 else {
-                    albumSelectorAdapter.enableClick(false)
+                    EventCenter.sendEvent(EPXConstants.ENABLE_LIST_ITEM_CLICK, this)
                 }
 
                 textViewAction.text = if (getSelectedImagePath().isEmpty()) {

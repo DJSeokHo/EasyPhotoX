@@ -53,7 +53,7 @@ class SHSelectedImageItemViewHolder(itemView: View) : RecyclerView.ViewHolder(it
     fun updateView() {
 
         imageView.post {
-            EPXGlide.setImage(imageSelectedItemBean.imageUri, imageView, imageView.width, imageView.height, 0.7f)
+            EPXGlide.setImage(imageView, imageView.width, imageView.height,0.7f, uri = imageSelectedItemBean.imageUri)
         }
     }
 }
