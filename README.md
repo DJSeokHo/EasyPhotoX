@@ -21,7 +21,7 @@ allprojects {
 ```
 dependencies {
 
-  implementation 'com.github.DJSeokHo:EasyPhotoX:1.0.13'
+  implementation 'com.github.DJSeokHo:EasyPhotoX:1.0.14'
   
 }
 ```
