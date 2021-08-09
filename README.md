@@ -28,6 +28,55 @@ dependencies {
 
 # How to use
 
+first of all, don't forget permissions in your manifest:
+```
+<uses-feature
+    android:name="android.hardware.camera"
+    android:required="true" />
+<uses-feature
+    android:name="android.hardware.camera.autofocus"
+    android:required="false" />
+
+<uses-permission android:name="android.permission.CAMERA" />
+<uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+<uses-permission
+    android:name="android.permission.WRITE_EXTERNAL_STORAGE"
+    tools:ignore="ScopedStorage" />
+
+<application
+    ...
+    ...
+
+    <provider
+        android:name="androidx.core.content.FileProvider"
+        android:authorities="${applicationId}.provider"
+        android:exported="false"
+        android:grantUriPermissions="true">
+        <meta-data
+            android:name="android.support.FILE_PROVIDER_PATHS"
+            android:resource="@xml/file_paths" />
+    </provider>
+
+</application>
+```
+
+and add xml folder in your res folder, and create file_paths.xml in the folder:
+```
+res
+ - xml
+  - file_paths.xml
+```
+
+in your file_paths.xml:
+```
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+<paths xmlns:android="http://schemas.android.com/apk/res/android">
+    <external-media-path name="media" android:path="@{string/app_name}/" />
+    <files-path name="files" path="."/>
+</paths>
+```
+
 for example, if you want to open camera in your activity, so the XML should be like this:
 ```
 <?xml version="1.0" encoding="utf-8"?>
