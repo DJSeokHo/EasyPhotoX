@@ -21,7 +21,7 @@ afterEvaluate {
                 // You can then customize attributes of the publication as shown below.
                 groupId = 'com.swein.easyphotox'
                 artifactId = 'EasyPhotoX'
-                version = '1.0.14'
+                version = '1.0.15'
             }
             // Creates a Maven publication called “debug”.
 //            debug(MavenPublication) {
@@ -30,7 +30,7 @@ afterEvaluate {
 //
 //                groupId = 'com.swein.easyphotox'
 //                artifactId = 'EasyPhotoX-debug'
-//                version = '1.0.14'
+//                version = '1.0.15'
 //            }
         }
     }
@@ -91,6 +91,7 @@ dependencies {
 
     implementation 'com.github.bumptech.glide:glide:4.12.0'
     implementation 'com.github.DJSeokHo:EasyEventObserver:1.0.6'
+    implementation 'com.github.DJSeokHo.EasyPermissionManager:EasyPermissionManager:1.0.7'
 }
 
 

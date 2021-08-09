@@ -1,6 +1,5 @@
 //package com.swein.easyphotox
 //
-//import android.Manifest
 //import android.content.Intent
 //import androidx.appcompat.app.AppCompatActivity
 //import android.os.Bundle
@@ -14,28 +13,24 @@
 //        super.onCreate(savedInstanceState)
 //        setContentView(R.layout.activity_easy_photo_x)
 //
-//        EasyPermissionManager.requestPermission(this,
-//            9999,
-//            "Permission",
-//            "permissions are necessary",
-//            "setting",
-//            listOf(Manifest.permission.CAMERA,
-//                Manifest.permission.READ_EXTERNAL_STORAGE,
-//                Manifest.permission.WRITE_EXTERNAL_STORAGE)
-//        ) {
-//            startCamera()
-//        }
-//    }
+//        EasyPhotoXFragment.startFragment(activity = this,
+//            fragmentContainer =  R.id.container,
+//            imageLimit = 10, // how many photo can take with camera and selected from album, the maximum
+//            permissionDialogTitle = "title of dialog when need to go to app setting screen to request permission",
+//            permissionDialogMessage = "message of dialog when need to go to app setting screen to request permission",
+//            permissionDialogPositiveButtonTitle = "positive button title of dialog when need to go to app setting screen to request permission",
+//            onImageSelected = { imageFilePathList -> // image path list that take with camera and selected from album
 //
-//    private fun startCamera() {
+//                // take photo or select image done
+//                EPXLog.debug("???", "${imageFilePathList.size}")
 //
-//        EasyPhotoXFragment.startFragment(this, R.id.container, 10, onImageSelected = {
+//                // remove photo fragment
+//                EasyPhotoXFragment.destroyFragment(this)
 //
-//            EPXLog.debug("???", "${it.size}")
-//
-//            EasyPhotoXFragment.destroyFragment(this)
 //        }, onCloseCamera = {
-//            EasyPhotoXFragment.destroyFragment(this)
+//
+//                // remove photo fragment
+//                EasyPhotoXFragment.destroyFragment(this)
 //        })
 //
 //    }

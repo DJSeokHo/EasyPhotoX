@@ -1,5 +1,6 @@
 package com.swein.easyphotox.camera
 
+import android.Manifest
 import com.swein.easyphotox.R
 
 import android.content.Context
@@ -21,6 +22,7 @@ import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentTransaction
 import com.google.common.util.concurrent.ListenableFuture
+import com.swein.easypermissionmanager.EasyPermissionManager
 import com.swein.easyphotox.album.selector.AlbumSelectorViewHolder
 import com.swein.easyphotox.resultprocessor.SHCameraPhotoResultProcessor
 import com.swein.easyphotox.shselectedimageviewholder.SHSelectedImageViewHolder
@@ -48,22 +50,37 @@ class EasyPhotoXFragment : Fragment() {
         private const val PHOTO_EXTENSION = ".jpg"
 
         fun startFragment(activity: AppCompatActivity, fragmentContainer: Int, imageLimit: Int,
+                          permissionDialogTitle: String = "Permission", permissionDialogMessage: String = "permissions are necessary",
+                          permissionDialogPositiveButtonTitle: String = "setting",
                           onImageSelected: (MutableList<String>) -> Unit, onCloseCamera: () -> Unit) {
 
-            val fragment = EasyPhotoXFragment().apply {
-                arguments = Bundle().apply {
-                    putInt("limit", imageLimit)
+            EasyPermissionManager.requestPermission(activity,
+                9999,
+                permissionDialogTitle,
+                permissionDialogMessage,
+                permissionDialogPositiveButtonTitle,
+                listOf(
+                    Manifest.permission.CAMERA,
+                    Manifest.permission.READ_EXTERNAL_STORAGE,
+                    Manifest.permission.WRITE_EXTERNAL_STORAGE)
+            ) {
+
+                val fragment = EasyPhotoXFragment().apply {
+                    arguments = Bundle().apply {
+                        putInt("limit", imageLimit)
+                    }
+
+                    this.onImageSelected = onImageSelected
+                    this.onCloseCamera = onCloseCamera
                 }
 
-                this.onImageSelected = onImageSelected
-                this.onCloseCamera = onCloseCamera
-            }
+                activity.supportActionBar?.hide()
+                activity.supportFragmentManager.beginTransaction()
+                    .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
+                    .replace(fragmentContainer, fragment, "SWeinEasyCameraPhotoFragment")
+                    .commitAllowingStateLoss()
 
-            activity.supportActionBar?.hide()
-            activity.supportFragmentManager.beginTransaction()
-                .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
-                .replace(fragmentContainer, fragment, "SWeinEasyCameraPhotoFragment")
-                .commitAllowingStateLoss()
+            }
 
         }
 
