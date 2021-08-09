@@ -54,7 +54,7 @@ class EasyPhotoXFragment : Fragment() {
                 arguments = Bundle().apply {
                     putInt("limit", imageLimit)
                 }
-                onImageSelected
+
                 this.onImageSelected = onImageSelected
                 this.onCloseCamera = onCloseCamera
             }
